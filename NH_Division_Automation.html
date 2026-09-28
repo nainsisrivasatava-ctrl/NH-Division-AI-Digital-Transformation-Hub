@@ -30,6 +30,8 @@
 
   header.top{background:var(--header-bg);border-bottom:1px solid var(--header-border);padding:18px 0;}
   header.top .wrap{padding:0 28px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;}
+  .brand-row{display:flex;align-items:center;gap:14px;}
+  .brand-mark{flex-shrink:0;filter:drop-shadow(0 2px 4px rgba(0,0,0,.25));}
   .brand{display:flex;flex-direction:column;}
   .brand .eyebrow{font-size:12px;color:#7FCDA6;margin:0 0 3px;letter-spacing:.02em;}
   .brand h1{font-size:21px;font-weight:500;margin:0;color:var(--header-text);}
@@ -65,8 +67,12 @@
   .card-panel{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:16px 18px;}
 
   .brand-cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px;}
-  .brand-card{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:18px 20px;cursor:pointer;transition:border-color .15s;}
-  .brand-card:hover{border-color:var(--gold-text);}
+  .brand-card{background:var(--card);border:1px solid var(--border);border-top:4px solid var(--border-strong);border-radius:10px;padding:18px 20px;cursor:pointer;transition:border-color .15s, transform .15s;}
+  .brand-card:hover{border-color:var(--gold-text);transform:translateY(-2px);}
+  .brand-card.ck{border-top-color:#A8863F;}
+  .brand-card.th{border-top-color:#2F5FA8;}
+  .brand-card.cak{border-top-color:#7A4FB0;}
+  .brand-card.ksa{border-top-color:#1E9E52;}
   .brand-card .bname{font-family:'Fraunces',serif;font-size:19px;margin:0 0 2px;}
   .brand-card .bmeta{font-size:11.5px;color:var(--muted);margin:0 0 12px;}
   .bc-stat-row{display:flex;justify-content:space-between;font-size:12px;padding:5px 0;border-top:1px solid var(--border);}
@@ -205,10 +211,21 @@
 
 <header class="top">
   <div class="wrap">
-    <div class="brand">
-      <p class="eyebrow">Apparel Group GCC</p>
-      <h1>NH Division AI &amp; Digital Transformation Hub</h1>
-      <p class="tagline">AI-Powered Tools · Automation · Insights · Customer Experience</p>
+    <div class="brand-row">
+      <svg class="brand-mark" width="46" height="46" viewBox="0 0 46 46" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="23" cy="23" r="22" fill="#0B2547" stroke="#28405F" stroke-width="1.5"/>
+        <path d="M23 23 L23 2 A21 21 0 0 1 42.2 15.5 Z" fill="#A8863F"/>
+        <path d="M23 23 L42.2 15.5 A21 21 0 0 1 34.5 41.8 Z" fill="#2F5FA8"/>
+        <path d="M23 23 L34.5 41.8 A21 21 0 0 1 8 40.5 Z" fill="#7A4FB0"/>
+        <path d="M23 23 L8 40.5 A21 21 0 0 1 23 2 Z" fill="#1E9E52"/>
+        <circle cx="23" cy="23" r="13" fill="#0B2547"/>
+        <text x="23" y="28" text-anchor="middle" font-family="Fraunces, serif" font-size="14" font-weight="600" fill="#FFFFFF">NH</text>
+      </svg>
+      <div class="brand">
+        <p class="eyebrow">Apparel Group GCC</p>
+        <h1>NH Division AI &amp; Digital Transformation Hub</h1>
+        <p class="tagline">AI-Powered Tools · Automation · Insights · Customer Experience</p>
+      </div>
     </div>
     <div class="nav-links" id="navLinks">
       <a data-route="overview">Overview</a>
@@ -222,7 +239,6 @@
 
 <div class="wrap">
   <div class="draft-flag">Draft only — not deployed anywhere live. Say the word when you want this pushed to a live page. <span id="syncBadge" class="sync-badge snap">🟡 Checking live connection…</span></div>
-  <div class="data-note" id="liveDebugPanel" style="display:none;white-space:pre-line;"></div>
 
   <!-- OVERVIEW -->
   <div class="page active" id="page-overview">
@@ -858,27 +874,27 @@ function renderBrandCards(){
   const t = MCCOPS.totals;
   const sc = SALES_COACH;
   document.getElementById('brandCards').innerHTML = `
-    <div class="brand-card" onclick="navigate('ck')">
+    <div class="brand-card ck" onclick="navigate('ck')">
       <p class="bname">Charles &amp; Keith</p>
       <p class="bmeta">GCC · MCC, Ops, Sales Coach</p>
       <div class="bc-stat-row"><span class="k">MCC avg</span><span class="v">${pct(t.mccAvg,1)}%</span></div>
       <div class="bc-stat-row"><span class="k">Ops avg</span><span class="v">${pct(t.opsAvg,1)}%</span></div>
       <div class="bc-stat-row"><span class="k">Sales Coach adoption</span><span class="v">${Math.round(sc.ck.adoptionRate)}% (${sc.ck.storesUsing}/${sc.ck.activeStores})</span></div>
     </div>
-    <div class="brand-card" onclick="navigate('th')">
+    <div class="brand-card th" onclick="navigate('th')">
       <p class="bname">Tommy Hilfiger</p>
       <p class="bmeta">Sales Coach (UAE) + KSA Digital Checklist (test)</p>
       <div class="bc-stat-row"><span class="k">Sales Coach adoption</span><span class="v">${Math.round(sc.th.adoptionRate)}% (${sc.th.storesUsing}/${sc.th.activeStores})</span></div>
       <div class="bc-stat-row"><span class="k">Style searches</span><span class="v">${sc.th.totalSearches}</span></div>
       <div class="bc-stat-row"><span class="k">Digital Checklist</span><span class="v">1 test entry</span></div>
     </div>
-    <div class="brand-card" onclick="navigate('cak')">
+    <div class="brand-card cak" onclick="navigate('cak')">
       <p class="bname">Calvin Klein</p>
       <p class="bmeta">Sales Coach (UAE) only — no separate checklist yet</p>
       <div class="bc-stat-row"><span class="k">Sales Coach adoption</span><span class="v">${Math.round(sc.cak.adoptionRate)}% (${sc.cak.storesUsing}/${sc.cak.activeStores})</span></div>
       <div class="bc-stat-row"><span class="k">Style searches</span><span class="v">${sc.cak.totalSearches}</span></div>
     </div>
-    <div class="brand-card" onclick="navigate('ksa')">
+    <div class="brand-card ksa" onclick="navigate('ksa')">
       <p class="bname">KSA Talent Grid</p>
       <p class="bmeta">Leadership review, all brands + Pedro</p>
       <div class="bc-stat-row"><span class="k">Managers rated (Q3 2026)</span><span class="v">${KSA.ratings.length}</span></div>
@@ -1166,6 +1182,54 @@ async function fetchWithTimeout(url, ms, label){
 // aggregation used to build the original snapshot. If your live endpoint's JSON uses different
 // key names than the sheet headers below, this will silently fall back to the snapshot —
 // paste me the raw JSON (open the URL + "?action=data" yourself) and I'll fix the mapping.
+// Merges a confirmed-real Ops feed (top-level keys: success, submissions, details, resolutions)
+// into the existing store list in place — used when Ops connects but MCC doesn't, so we don't
+// throw away real live Ops data just because MCC failed.
+function mergeLiveOpsOnly(opsRaw){
+  try{
+    const submissions = Array.isArray(opsRaw.submissions) ? opsRaw.submissions : null;
+    if(!submissions || !submissions.length) return false;
+    const details = Array.isArray(opsRaw.details) ? opsRaw.details : [];
+    const norm = s => String(s||'').trim().toUpperCase();
+    const byKey = {};
+    MCCOPS.stores.forEach(s=>{ byKey[norm(s.Country)+'|'+norm(s.Store)] = s; });
+
+    submissions.forEach(r=>{
+      const country = r['Country']; const store = r['Store'];
+      const key = norm(country)+'|'+norm(store);
+      const s = byKey[key];
+      if(!s) return;
+      let pct = r['Percentage']; if(typeof pct==='number' && pct<=1.5) pct = pct*100;
+      s.opsAudited = true;
+      s.opsScore = pct!=null ? Math.round(pct) : s.opsScore;
+      s.opsStatus = r['Status'] || s.opsStatus;
+      s.opsComment = r['Overall Comments / Notes'] || s.opsComment;
+    });
+    details.forEach(r=>{
+      const key = norm(r['Country'])+'|'+norm(r['Store']);
+      const s = byKey[key];
+      if(!s) return;
+      if(!s._liveCheckpointsStarted){ s.opsCheckpoints = []; s._liveCheckpointsStarted = true; }
+      s.opsCheckpoints.push({category:r['Category'], checkpoint:r['Checkpoint'], result:r['Result'], remark:r['Remark'], action:r['Action']});
+    });
+
+    const byCountry = {};
+    MCCOPS.stores.forEach(s=>{
+      if(!byCountry[s.Country]) byCountry[s.Country] = {opsSum:0, opsN:0, opsAudited:0};
+      const c = byCountry[s.Country];
+      if(s.opsAudited && s.opsScore!=null){ c.opsSum += s.opsScore; c.opsN++; c.opsAudited++; }
+    });
+    MCCOPS.countries.forEach(c=>{
+      const agg = byCountry[c.country];
+      if(agg){ c.opsAvg = agg.opsN ? agg.opsSum/agg.opsN : c.opsAvg; c.opsAudited = agg.opsAudited; }
+    });
+    const allOps = MCCOPS.countries.filter(c=>c.opsAvg!=null).map(c=>c.opsAvg);
+    MCCOPS.totals.opsAvg = allOps.length ? allOps.reduce((a,b)=>a+b,0)/allOps.length : MCCOPS.totals.opsAvg;
+    MCCOPS.totals.opsAudited = MCCOPS.stores.filter(s=>s.opsAudited).length;
+    return true;
+  }catch(e){ return false; }
+}
+
 function aggregateLiveMccOps(mccRows, opsRows){
   try{
     if(!Array.isArray(mccRows) || !mccRows.length) return null;
@@ -1247,14 +1311,23 @@ async function initLiveData(){
 
   // MCC / Ops
   const mccRows = mccRaw && (mccRaw.rows || mccRaw.data || (Array.isArray(mccRaw)?mccRaw:null));
-  const opsRows = opsRaw && (opsRaw.rows || opsRaw.data || (Array.isArray(opsRaw)?opsRaw:null));
-  const rebuiltMccOps = aggregateLiveMccOps(mccRows, opsRows);
+  const opsRowsFlat = opsRaw && (opsRaw.rows || opsRaw.data || (Array.isArray(opsRaw)?opsRaw:null));
+  const rebuiltMccOps = aggregateLiveMccOps(mccRows, opsRowsFlat);
   if(rebuiltMccOps && rebuiltMccOps.stores.length){
     MCCOPS.stores = rebuiltMccOps.stores;
     MCCOPS.countries = rebuiltMccOps.countries;
     MCCOPS.totals = Object.assign(MCCOPS.totals, rebuiltMccOps.totals);
-    LIVE_STATUS.mcc = 'live'; LIVE_STATUS.ops = opsRows ? 'live' : 'snapshot';
+    LIVE_STATUS.mcc = 'live'; LIVE_STATUS.ops = opsRowsFlat ? 'live' : 'snapshot';
     renderCkKpis(); renderMccList('all'); renderOpsList();
+  } else if(opsRaw && typeof opsRaw === 'object' && Array.isArray(opsRaw.submissions)){
+    // MCC didn't come through, but Ops did — merge real Ops data into the existing snapshot
+    // rather than discarding it.
+    const merged = mergeLiveOpsOnly(opsRaw);
+    if(merged){
+      LIVE_STATUS.ops = 'live';
+      renderCkKpis(); renderOpsList();
+      LIVE_DEBUG.push('[Ops] Merged live Ops data into the existing MCC snapshot (MCC store list not replaced since the MCC feed itself did not connect).');
+    }
   }
 
   // CK Sales Coach
