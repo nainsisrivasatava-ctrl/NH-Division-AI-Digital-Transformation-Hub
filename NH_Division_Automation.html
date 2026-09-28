@@ -222,6 +222,7 @@
 
 <div class="wrap">
   <div class="draft-flag">Draft only — not deployed anywhere live. Say the word when you want this pushed to a live page. <span id="syncBadge" class="sync-badge snap">🟡 Checking live connection…</span></div>
+  <div class="data-note" id="liveDebugPanel" style="display:none;white-space:pre-line;"></div>
 
   <!-- OVERVIEW -->
   <div class="page active" id="page-overview">
@@ -1128,17 +1129,34 @@ function aggregateLiveKsaTalent(raw){
   }catch(e){ return null; }
 }
 
-async function fetchWithTimeout(url, ms){
+const LIVE_DEBUG = [];
+async function fetchWithTimeout(url, ms, label){
   const ctrl = new AbortController();
   const t = setTimeout(()=>ctrl.abort(), ms);
+  const full = url + (url.includes('?')?'&':'?') + 'action=data';
   try{
-    const res = await fetch(url + (url.includes('?')?'&':'?') + 'action=data', {signal: ctrl.signal});
+    const res = await fetch(full, {signal: ctrl.signal});
     clearTimeout(t);
-    if(!res.ok) return null;
-    const json = await res.json();
+    if(!res.ok){
+      const msg = `[${label}] HTTP ${res.status} from ${full}`;
+      console.warn(msg); LIVE_DEBUG.push(msg);
+      return null;
+    }
+    const text = await res.text();
+    let json;
+    try{ json = JSON.parse(text); }
+    catch(parseErr){
+      const msg = `[${label}] Response wasn't valid JSON (likely got the HTML page, not data). First 200 chars: ${text.slice(0,200)}`;
+      console.warn(msg); LIVE_DEBUG.push(msg);
+      return null;
+    }
+    console.log(`[${label}] Live fetch OK. Sample of response:`, json);
+    LIVE_DEBUG.push(`[${label}] OK — top-level keys: ${typeof json==='object' ? Object.keys(json).join(', ') : typeof json}`);
     return json;
   }catch(e){
     clearTimeout(t);
+    const msg = `[${label}] Fetch failed — likely CORS or network block. Error: ${e.message}`;
+    console.warn(msg); LIVE_DEBUG.push(msg);
     return null;
   }
 }
@@ -1221,10 +1239,10 @@ function setBadge(id, isLive, liveLabel, snapLabel){
 
 async function initLiveData(){
   const [mccRaw, opsRaw, scRaw, ksaRaw] = await Promise.all([
-    fetchWithTimeout(LIVE_SOURCES.mcc, 6000),
-    fetchWithTimeout(LIVE_SOURCES.ops, 6000),
-    fetchWithTimeout(LIVE_SOURCES.salesCoachCK, 6000),
-    fetchWithTimeout(LIVE_SOURCES.ksaTalent, 6000)
+    fetchWithTimeout(LIVE_SOURCES.mcc, 6000, 'MCC'),
+    fetchWithTimeout(LIVE_SOURCES.ops, 6000, 'Ops'),
+    fetchWithTimeout(LIVE_SOURCES.salesCoachCK, 6000, 'Sales Coach'),
+    fetchWithTimeout(LIVE_SOURCES.ksaTalent, 6000, 'KSA Talent Grid')
   ]);
 
   // MCC / Ops
@@ -1263,6 +1281,12 @@ async function initLiveData(){
   setBadge('syncBadge', anyLive, '🟢 Live data connected', '🟡 Snapshot data (last export)');
   setBadge('ckScBadge', LIVE_STATUS.salesCoachCK==='live');
   setBadge('ksaBadge', LIVE_STATUS.ksaTalent==='live');
+
+  const panel = document.getElementById('liveDebugPanel');
+  if(panel && LIVE_DEBUG.length){
+    panel.style.display = 'block';
+    panel.innerHTML = '<b>Live connection details</b> (screenshot this row and send it if anything says Snapshot):\n' + LIVE_DEBUG.join('\n');
+  }
 }
 
 /* ---------- init ---------- */
